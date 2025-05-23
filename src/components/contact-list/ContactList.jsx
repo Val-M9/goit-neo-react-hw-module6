@@ -1,19 +1,26 @@
+import { useSelector } from 'react-redux'
+import { selectContacts, selectFilterByName } from '../../redux/selectors'
 import Contact from '../contact/Contact'
 import styles from './ContactList.module.css'
 
-const ContactList = ({ records, onDeleteRecord }) => {
+const ContactList = () => {
+  const contacts = useSelector(selectContacts)
+  const filterByName = useSelector(selectFilterByName)
+
+  const renderContacts =
+    filterByName.length > 0
+      ? contacts.filter((contact) =>
+          contact.name.toLowerCase().includes(filterByName.toLowerCase())
+        )
+      : contacts
+
   return (
     <>
-      {records.length > 0 ? (
+      {renderContacts.length > 0 ? (
         <ul className={styles.contactList}>
-          {records.map(({ id, name, number }) => (
+          {renderContacts.map(({ id, name, number }) => (
             <li key={id} className={styles.item}>
-              <Contact
-                id={id}
-                name={name}
-                number={number}
-                onDeleteRecord={onDeleteRecord}
-              />
+              <Contact id={id} name={name} number={number} />
             </li>
           ))}
         </ul>
